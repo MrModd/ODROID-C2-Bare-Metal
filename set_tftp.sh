@@ -1,0 +1,131 @@
+#!/bin/bash
+
+#set_tftp.sh
+#Copyright (C) 2016  Federico "MrModd" Cosentino
+
+CURR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd )" # Current directory
+
+#########################################################
+# Variables
+#########################################################
+DNSMASQ_GIT="git://thekelleys.org.uk/dnsmasq.git"
+DNSMASQ_COMMIT="master"
+DNSMASQ_DIR="$CURR/dnsmasq"
+TFTP_DIR="$CURR/tftp"
+IFACE="eth0"
+IP="10.0.0.1/24"
+DNSMASQ_ARGS="--no-daemon --port=0 --enable-tftp --tftp-root=$TFTP_DIR"
+#########################################################
+
+# Colors
+TXT_COLOR="\e[1;34m" # Normal text
+CON_COLOR="\e[1;32m" # Confirm messages
+ERR_COLOR="\e[1;31m" # Error messages
+RST_COLOR="\e[0m"    # Reset terminal color
+
+#########################################################
+
+# Functions
+
+clone_dnsmasq() {
+	echo -e "${TXT_COLOR}Cloning Dnsmasq..${RST_COLOR}"
+	
+	if [ ! -d "$DNSMASQ_DIR" ] ; then
+		git clone $DNSMASQ_GIT -b $DNSMASQ_COMMIT "$DNSMASQ_DIR"
+		if [ $? != 0 ] ; then
+			echo -e "${ERR_COLOR}Cannot clone repository.${RST_COLOR}" >&2
+			return 1
+		fi
+	else
+		echo -e "${CON_COLOR}Already present.${RST_COLOR}"
+		echo -e "${TXT_COLOR}Pulling last changes...${RST_COLOR}"
+		
+		git -C "$DNSMASQ_DIR" pull
+		if [ $? != 0 ] ; then
+			echo -e "${ERR_COLOR}Cannot pull repository.${RST_COLOR}" >&2
+			return 1
+		fi
+	fi
+	
+	echo -e "${CON_COLOR}Done.${RST_COLOR}"
+	
+	return 0
+}
+
+compile_dnsmasq() {
+	echo -e "${TXT_COLOR}Compiling Dnsmasq...${RST_COLOR}"
+	
+	make -C "$DNSMASQ_DIR" -j$(grep -c ^processor /proc/cpuinfo)
+	if [ $? != 0 ] ; then
+		echo -e "${ERR_COLOR}Error compiling Dnsmasq.${RST_COLOR}" >&2
+		return 1
+	fi
+	
+	echo -e "${CON_COLOR}Done.${RST_COLOR}"
+	
+	return 0
+}
+
+start_dnsmasq() {
+	echo -e "${TXT_COLOR}Running Dnsmasq with sudo...${RST_COLOR}"
+	
+	mkdir -p "$TFTP_DIR"
+	
+	
+	sudo ip a add $IP dev $IFACE 2> /dev/null
+	
+	sudo "$DNSMASQ_DIR/src/dnsmasq" $DNSMASQ_ARGS
+	if [ $? != 0 ] ; then
+		echo -e "${ERR_COLOR}Error running Dnsmasq.${RST_COLOR}" >&2
+		return 1
+	fi
+	
+	return $?
+}
+
+clean_all() {
+	echo -e "${TXT_COLOR}Cleaning all...${RST_COLOR}"
+	
+	rm -rf "$DNSMASQ_DIR"
+	rm -rf "$TFTP_DIR"
+	
+	echo -e "${CON_COLOR}Done.${RST_COLOR}"
+}
+
+SCRIPT_NAME=$0
+print_help() {
+	echo -e "Usage $SCRIPT_NAME [OPTIONS]" >&2
+	echo -e "\nOPTIONS:" >&2
+	echo -e "\t-h, -?" >&2
+	echo -e "\t\tshow this help" >&2
+	echo -e "\t-z" >&2
+	echo -e "\t\tdelete all downloaded and compiled files" >&2
+}
+
+while getopts "h?z" opt; do
+case "$opt" in
+	h|\?)
+		print_help
+		exit 0
+		;;
+	z)
+		clean_all
+		exit 0
+		;;
+esac
+done
+
+clone_dnsmasq
+if [ $? != 0 ] ; then
+	exit 1
+fi
+compile_dnsmasq
+if [ $? != 0 ] ; then
+	exit 1
+fi
+start_dnsmasq
+if [ $? != 0 ] ; then
+	exit 1
+fi
+
+exit 0

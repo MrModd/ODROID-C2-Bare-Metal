@@ -14,7 +14,7 @@ CC_URLS=("https://releases.linaro.org/14.09/components/toolchain/binaries/gcc-li
 UBOOT_GIT="https://github.com/hardkernel/u-boot.git"
 UBOOT_COMMIT="odroidc2-v2015.01"
 BOOT_FILES=("https://github.com/hardkernel/u-boot/raw/odroidc2-v2015.01/sd_fuse/bl1.bin.hardkernel" \
-			"https://github.com/hardkernel/u-boot/blob/odroidc2-v2015.01/sd_fuse/sd_fusing.sh")
+			"https://github.com/hardkernel/u-boot/raw/odroidc2-v2015.01/sd_fuse/sd_fusing.sh")
 UBOOT_DIR="$CURR/uboot"
 UBOOT_BIN="$UBOOT_DIR/sd_fuse/u-boot.bin"
 CC_DIR="$CURR"
@@ -110,6 +110,7 @@ compile_uboot() {
 	
 	export ARCH="arm"
 	export CROSS_COMPILE="$CROSS_COMPILE"
+	export PATH="$CC_DIR/$CC_NAME/bin/:$PATH"
 	
 	make -C "$UBOOT_DIR" odroidc2_config
 	if [ $? != 0 ] ; then
@@ -160,58 +161,24 @@ copy_files() {
 			if [ $? != 0 ] ; then
 				echo -e "${ERR_COLOR}Error downloading $file. Continuing anyway...${RST_COLOR}" >&2
 			fi
+			if [ "${file##*.}" == "sh" ] ; then
+				chmod +x "$BOOT_DIR/$file"
+			fi
 			echo -e "${CON_COLOR}Done.${RST_COLOR}"
 		fi
 	done
 	
 	echo -e "${TXT_COLOR}README...${RST_COLOR}"
-	cat > "$BOOT_DIR/README" << EOF
--- Format the microSD card
-
-Guide taken from ArchlinuxARM:
-https://archlinuxarm.org/platforms/armv8/amlogic/odroid-c2
-
-Replace sdX in the following instructions with the device name for
-the SD card as it appears on your computer.
-
-1. Zero the beginning of the SD card:
-   dd if=/dev/zero of=/dev/sdX bs=1M count=8
-2. Start fdisk to partition the SD card:
-   fdisk /dev/sdX
-3. At the fdisk prompt, create the new partitions:
-   a. Type o. This will clear out any partitions on the drive.
-   b. Type p to list partitions. There should be no partitions left.
-   c. Type n, then p for primary, 1 for the first partition on the drive,
-      enter twice to accept the default starting and ending sectors.
-   d. Type t, then 1 to select first partition and then b to change the
-      partition type into FAT32.
-   e. Write the partition table and exit by typing w.
-4. Create the filesystem:
-   mkfs.fat -F 32 /dev/sdX1
-
--- Boot files
-
-1. Copy following files from this folder to the microSD:
-   u-boot.bin
-
--- Bootloader
-
-1. Run (as root) sd_fusing.sh script pointing to the microSD device:
-   ./sd_fusing.sh /dev/sdX
-
--- UART Console Connector on the ODROID C2
-
-_____UART____
-|Pin 4 - GND|
-|Pin 3 - RXD|
-|Pin 2 - TXD|
-|Pin 1 - VCC|
-\___________|
-
-3.3V LVTTL
-EOF
+	cp "$CURR/configs/final_readme" "$BOOT_DIR/README"
 	if [ $? != 0 ] ; then
-		echo -e "${ERR_COLOR}Error creating README file.${RST_COLOR}" >&2
+		echo -e "${ERR_COLOR}Error copying README file.${RST_COLOR}" >&2
+	fi
+	echo -e "${CON_COLOR}Done.${RST_COLOR}"
+	
+	echo -e "${TXT_COLOR}boot.ini...${RST_COLOR}"
+	cp "$CURR/configs/boot.ini" "$BOOT_DIR/boot.ini"
+	if [ $? != 0 ] ; then
+		echo -e "${ERR_COLOR}Error copying boot.ini file.${RST_COLOR}" >&2
 	fi
 	
 	echo -e "${CON_COLOR}Done.${RST_COLOR}"
