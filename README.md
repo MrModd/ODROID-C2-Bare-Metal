@@ -121,6 +121,14 @@ After that use next invocation to start the server:
 $ ./set_tftp.sh
 ```
 
+Finally use **set_environment.sh** in order to export "CROSS_COMPILE" variable
+required by Makefiles to get the right compiler. You should source this script
+instead of invoke it directly as shown below:
+
+```sh
+$ source ./set_environment.sh
+```
+
 [ODROID-C2]: <http://www.hardkernel.com/>
 [ODROID portal]: <http://odroid.com/dokuwiki/doku.php?id=en:odroid-c2>
 [Board schematics]: <http://dn.odroid.com/S905/Schematic/odroid-c2_rev0.2_20160226.pdf>
