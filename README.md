@@ -1,7 +1,7 @@
 # ODROID C2 Bare Metal
 
 ## License
-Minimal Operating System for ODROID C2 Single-board Computer. \
+Minimal Operating System for ODROID C2 Single-board Computer.
 Copyright (C) 2016 Federico "MrModd" Cosentino
 
 This program is free software: you can redistribute it and/or modify
@@ -96,7 +96,30 @@ adds new features to all previous ones.
 
 ## How to
 
-This section is work in progress...
+### Using the scripts
+
+There are two main scripts called **get_ready.sh** and **set_tftp.sh**. First one
+is intended to prepare the environment for crosscompiling and for booting the board.
+The second one sets up a local TFTP server that deliver the binary program to the
+board if connected via ethernet to the machine where you are compiling.
+
+Invoke the scripts with "-h" option for an help on the correct parameters to pass.
+
+```sh
+$ ./get_ready.sh -cup
+```
+this invocation of *get_ready.sh* downloads the correct toolchain, clones U-Boot
+repository and compiles it with the crosscompiler. All needed files will be put
+in a folder called **root/**. Read the README file inside it for a guide to the
+preparation of the MicroSD for the board.
+
+To start the TFTP server modify first lines of *set_tftp.sh* script. Check that
+"IFACE" variable is correct for your network interface where the board is connected.
+After that use next invocation to start the server:
+
+```sh
+$ ./set_tftp.sh
+```
 
 [ODROID-C2]: <http://www.hardkernel.com/>
 [ODROID portal]: <http://odroid.com/dokuwiki/doku.php?id=en:odroid-c2>
