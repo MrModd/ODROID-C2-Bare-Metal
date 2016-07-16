@@ -27,7 +27,7 @@ DNSMASQ_GIT="git://thekelleys.org.uk/dnsmasq.git"
 DNSMASQ_COMMIT="master"
 DNSMASQ_DIR="$CURR/dnsmasq"
 TFTP_DIR="$CURR/tftp"
-IFACE="eth0"
+IFACE="enp0s20u1"
 IP="10.0.0.1/24"
 DNSMASQ_ARGS="--no-daemon --port=0 --enable-tftp --tftp-root=$TFTP_DIR"
 #########################################################
@@ -113,15 +113,22 @@ print_help() {
 	echo -e "\nOPTIONS:" >&2
 	echo -e "\t-h, -?" >&2
 	echo -e "\t\tshow this help" >&2
+	echo -e "\t-s" >&2
+	echo -e "\t\tskip updating if Dnsmasq is already present" >&2
 	echo -e "\t-z" >&2
 	echo -e "\t\tdelete all downloaded and compiled files" >&2
 }
 
-while getopts "h?z" opt; do
+SKIP_PULL=""
+
+while getopts "h?sz" opt; do
 case "$opt" in
 	h|\?)
 		print_help
 		exit 0
+		;;
+	s)
+		SKIP_PULL="true"
 		;;
 	z)
 		clean_all
@@ -130,9 +137,15 @@ case "$opt" in
 esac
 done
 
-clone_dnsmasq
-if [ $? != 0 ] ; then
-	exit 1
+if [ ! -d "$DNSMASQ_DIR" ] ; then
+	SKIP_PULL="true"
+fi
+
+if [ $SKIP_PULL != "true" ] ; then
+	clone_dnsmasq
+	if [ $? != 0 ] ; then
+		exit 1
+	fi
 fi
 compile_dnsmasq
 if [ $? != 0 ] ; then

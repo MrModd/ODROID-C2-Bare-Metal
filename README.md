@@ -121,9 +121,17 @@ After that use next invocation to start the server:
 $ ./set_tftp.sh
 ```
 
-Finally use **set_environment.sh** in order to export "CROSS_COMPILE" variable
-required by Makefiles to get the right compiler. You should source this script
-instead of invoke it directly as shown below:
+Note that this script tries to set a static IP address to the network interface
+before starting the server. If you encounter some issues obtaining the file
+with TFTP protocol check the correctness of the IP on the ethernet interface
+of your PC. NetworkManager, if present, could interfer with this script resetting
+the interface whenever the LAN connection is absent. If you have any problems you
+can always copy the binary file to the microSD card and then uncomment the line
+on "boot.ini" that enables the local boot.
+
+Finally use **set_environment.sh** in order to export "CROSS_COMPILE" and others
+variables required by Makefiles to get the right compiler. You should source
+this script instead of invoke it directly as shown below:
 
 ```sh
 $ source ./set_environment.sh

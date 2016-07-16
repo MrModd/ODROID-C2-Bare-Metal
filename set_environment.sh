@@ -45,6 +45,12 @@ if [ $? != 0 ] ; then
 fi
 
 export CROSS_COMPILE="$CROSS_COMPILE"
+export CC="gcc"
+export AS="as"
+export LD="ld"
+export NM="nm"
+export OBJCOPY="objcopy"
+export OBJDUMP="objdump"
 
 echo "CROSS_COMPILE=$CROSS_COMPILE"
 echo "DONE."
