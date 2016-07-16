@@ -22,9 +22,9 @@
  */
 
 /* Entry point function of the program */
-ENTRY(noop)
+ENTRY(main)
 
-/* Memory addresses (refer to the Broadcom SoC manual) */
+/* Memory addresses (refer to the SoC manual) */
 mem_start = 0x11000000;
 mem_end	  = 2 * 1024 * 1024 * 1024;
 

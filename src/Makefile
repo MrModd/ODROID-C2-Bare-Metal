@@ -22,24 +22,24 @@ endif
 
 # Where to put the bin file. Should be the same folder defined in
 # set_tftp.sh as TFTP_DIR
-INSTALLDIR:=../tftp
+INSTALLDIR := ../tftp
 
 # Set compilation args
-CFLAGS=-Wall -Wextra -O2 -ffreestanding
-ARCHFLAGS=-mcpu=cortex-a53 -mtune=cortex-a53 -march=cortex-a53
+CFLAGS = -Wall -Wextra -Wpedantic -O2 -ffreestanding
+ARCHFLAGS = -march=armv8-a -mcpu=cortex-a53 -mtune=cortex-a53
 
 # Set install invocation
 INSTALL = install -m 755
 
 # Find all source files
-CFILES:=$(shell ls *.c 2>/dev/null)
-SFILES:=$(shell ls *.S 2>/dev/null)
-HFILES:=$(shell ls *.h 2>/dev/null)
-AOBJS:=$(SFILES:%.S=%.o)
-COBJS:=$(CFILES:%.c=%.o)
+CFILES := $(shell ls *.c 2>/dev/null)
+SFILES := $(shell ls *.S 2>/dev/null)
+HFILES := $(shell ls *.h 2>/dev/null)
+AOBJS := $(SFILES:%.S=%.o)
+COBJS := $(CFILES:%.c=%.o)
 
 # This is the output name for the project
-TARGET=program
+TARGET = program
 
 TAG_SUBDIRS := .
 FIND := find
@@ -85,11 +85,11 @@ $(COBJS): $(HFILES)
 
 # Generate objects file from C sources
 %.o: %.c 
-	$(CROSS_COMPILE)$(CC) $(CFLAGS) $(CCARCHFLAGS) -c $<
+	$(CROSS_COMPILE)$(CC) $(CFLAGS) $(ARCHFLAGS) -c $<
 
 # Generate assembly code from C sources
 %.s: %.c
-	$(CROSS_COMPILE)$(CC) $(CFLAGS) $(CCARCHFLAGS) -S $<
+	$(CROSS_COMPILE)$(CC) $(CFLAGS) $(ARCHFLAGS) -S $<
 
 
 

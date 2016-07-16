@@ -21,7 +21,7 @@
 * to itself.
 * Look at the .lst file to see the assembly code.
 */
-void noop(void)
+void main(void)
 {
 	for(;;)
 		;
