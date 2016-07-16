@@ -138,10 +138,10 @@ esac
 done
 
 if [ ! -d "$DNSMASQ_DIR" ] ; then
-	SKIP_PULL="true"
+	SKIP_PULL=""
 fi
 
-if [ $SKIP_PULL != "true" ] ; then
+if [ ! $SKIP_PULL ] ; then
 	clone_dnsmasq
 	if [ $? != 0 ] ; then
 		exit 1
