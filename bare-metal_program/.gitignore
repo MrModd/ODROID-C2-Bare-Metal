@@ -1,0 +1,8 @@
+*.~
+*.o
+*.s
+*.bin
+*.elf
+*.lst
+*.sym
+tags
