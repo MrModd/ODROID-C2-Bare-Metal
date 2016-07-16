@@ -65,10 +65,17 @@ is a list of what you'll need:
                                 aspects (interrups, timers,
                                 cache, synchronization primitives,
                                 etc.);
-* Architecture Reference Manual: it contains the complete instruction
-                                 set of the ARM processor. This
-                                 manual can be obtained with an
-                                 ARM account, but it's not essential.
+* [Programmer's Guide]: a useful manual to those who want to write code
+                        for this CPU; it contains some details about the
+                        instruction set, the exception handling, the MMU
+                        and more;
+* *Architecture Reference Manual*: it contains the complete instruction
+                                   set of the ARM processor. This
+                                   manual can be obtained with an
+                                   ARM account, but it's not essential.
+
+In addition to these it may be useful have a look at the ARM page for
+[Cortex-A53].
 
 ## Project organization
 
@@ -142,6 +149,8 @@ $ source ./set_environment.sh
 [Board schematics]: <http://dn.odroid.com/S905/Schematic/odroid-c2_rev0.2_20160226.pdf>
 [SoC manual]: <http://dn.odroid.com/S905/DataSheet/S905_Public_Datasheet_V1.1.4.pdf>
 [Technical Reference Manual]: <http://infocenter.arm.com/help/topic/com.arm.doc.ddi0500g/DDI0500G_cortex_a53_trm.pdf>
+[Programmer's Guide]: <https://static.docs.arm.com/den0024/a/DEN0024.pdf>
+[Cortex-A53]: <https://developer.arm.com/products/processors/cortex-a/cortex-a53>
 [U-Boot]: <http://www.denx.de/wiki/U-Boot>
 [wiki_uboot]: <http://odroid.com/dokuwiki/doku.php?id=en:c2_building_u-boot>
 [Dnsmasq]: <http://www.thekelleys.org.uk/dnsmasq/doc.html>
