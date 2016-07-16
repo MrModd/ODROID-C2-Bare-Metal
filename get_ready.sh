@@ -34,7 +34,7 @@ UBOOT_DIR="$CURR/uboot"
 UBOOT_BIN="$UBOOT_DIR/sd_fuse/u-boot.bin"
 CC_DIR="$CURR"
 CROSS_COMPILE="$CC_DIR/$CC_NAME/bin/aarch64-none-elf-"
-BOOT_DIR="$CURR/root"
+BOOT_DIR="$CURR/sdcard"
 #########################################################
 
 # Get branch that contains a commit:

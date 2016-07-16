@@ -117,7 +117,7 @@ $ ./get_ready.sh -cup
 ```
 this invocation of *get_ready.sh* downloads the correct toolchain, clones U-Boot
 repository and compiles it with the crosscompiler. All needed files will be put
-in a folder called **root/**. Read the README file inside it for a guide to the
+in a folder called **sdcard/**. Read the README file inside it for a guide to the
 preparation of the MicroSD for the board.
 
 To start the TFTP server modify first lines of *set_tftp.sh* script. Check that
