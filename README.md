@@ -86,7 +86,7 @@ complexity.
 The *master* branch contains just the basic scripts required in order
 get all the essential tools:
 
-- **Crosscompiler**: required in order to compile bare-metal
+- **Cross compiler**: required in order to compile bare-metal
                      programs and bootloader for target architecture;
 - **Bootloader**: the first external program the CPU calls, this
                   board uses [U-Boot] as described on the official
@@ -116,7 +116,7 @@ Invoke the scripts with "-h" option for an help on the correct parameters to pas
 $ ./get_ready.sh -cup
 ```
 this invocation of *get_ready.sh* downloads the correct toolchain, clones U-Boot
-repository and compiles it with the crosscompiler. All needed files will be put
+repository and compiles it with the cross compiler. All needed files will be put
 in a folder called **sdcard/**. Read the README file inside it for a guide to the
 preparation of the MicroSD for the board.
 
@@ -143,6 +143,19 @@ this script instead of invoke it directly as shown below:
 ```sh
 $ source ./set_environment.sh
 ```
+
+## Troubleshooting
+
+### No such file or directory while executing the cross compiler
+
+This may happen when you are on a 64bit system, but the downloaded toolchain is
+for 32bit. Under Ubuntu you should resolve installing the required 32bit libraries:
+
+```sh
+# apt-get install libc6-i386 lib32stdc++6 lib32gcc1 lib32ncurses5 lib32z1
+```
+
+On other distributions install the equivalent packages.
 
 [ODROID-C2]: <http://www.hardkernel.com/>
 [ODROID portal]: <http://odroid.com/dokuwiki/doku.php?id=en:odroid-c2>
