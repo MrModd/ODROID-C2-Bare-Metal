@@ -35,6 +35,15 @@ of the microSD. After executing this command the program shoud be in RAM
 and the *go* command of U-Boot specified on the config file should make
 the bootloader jump into it.
 
+## Compile and install
+
+To compile the program prepare the shell with the **set_environment.sh**
+script and type **make** on this directory.
+You'll need to copy the binary file in the TFTP root folder so that U-Boot
+will get the latest version of the program. Use **make install** in order
+to copy the file on the correct location. Note that this command will also
+compile the program if necessary.
+
 ## 01 - Noop
 
 For this step the important is to generate some code that can run on the
