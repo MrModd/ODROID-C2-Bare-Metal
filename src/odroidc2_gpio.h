@@ -16,28 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  \***********************************************************************/
 
-#include "odroidc2_gpio.h"
+#ifndef ODROIDC2_GPIO
+#define ODROIDC2_GPIO
+ 
+#define GPIO_BASE   0xc8834400
+#define GPIOAO_BASE 0xc8100000
 
-volatile unsigned int *gpio = (unsigned int *) GPIOAO_BASE;
+#define AO_REG  0xc8100014
+#define AO_REG2 0xc8100018
 
-void main(void)
-{
-	/* Reset mux */
-	volatile unsigned int *ao_reg = (unsigned int *) AO_REG;
-	volatile unsigned int *ao_reg2 = (unsigned int *) AO_REG2;
-	
-	*ao_reg &= ~(1u<<31 | 1u<<4 | 1u<<3);
-	*ao_reg2 &= ~(1u<<1);
-	
-	/* Set as an output */
-	gpio[GPIOAO_OFF1] &= ~(1u<<LED_BIT);
-	/*gpio[GPIOAO_OFF3] &= ~(1u<<LED_BIT);*/
-	
-	/* Set high */
-	gpio[GPIOAO_OFF1] |= 1u<<(LED_BIT+16);
-	/* Set low */
-	/*gpio[GPIOAO_OFF1] &= ~(1u<<(LED_BIT+16));*/
-	
-	for(;;)
-		;
-}
+#define GPIOAO_OFF1 0x09
+#define GPIOAO_OFF2 0x0a
+#define GPIOAO_OFF3 0x0b
+
+#define LED_BIT 13
+
+#endif
