@@ -16,27 +16,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  \***********************************************************************/
 
-#include "odroidc2_gpio.h"
+#include "odroidc2.h"
 
 volatile unsigned int *gpio = (unsigned int *) GPIOAO_BASE;
 
 void main(void)
 {
-	/* Reset mux */
-	volatile unsigned int *ao_reg = (unsigned int *) AO_REG;
+	volatile unsigned int *ao_reg =  (unsigned int *) AO_REG;
 	volatile unsigned int *ao_reg2 = (unsigned int *) AO_REG2;
 	
-	*ao_reg &= ~(1u<<31 | 1u<<4 | 1u<<3);
-	*ao_reg2 &= ~(1u<<1);
+	/* Reset mux */
+	CLR_MASK(*ao_reg, AO_REG_GPIOAO_13_MASK);
+	CLR_MASK(*ao_reg2, AO_REG2_GPIOAO_13_MASK);
 	
 	/* Set as an output */
-	gpio[GPIOAO_OFF1] &= ~(1u<<LED_BIT);
-	/*gpio[GPIOAO_OFF3] &= ~(1u<<LED_BIT);*/
+	CLR_MASK(gpio[GPIOAO_OEN_OFFSET], BIT2MASK(GPIOAO_13_OEN_BIT));
+	CLR_MASK(gpio[GPIOAO_PUPDEN_OFFSET], BIT2MASK(GPIOAO_13_PUPDEN_BIT));
 	
 	/* Set high */
-	gpio[GPIOAO_OFF1] |= 1u<<(LED_BIT+16);
+	SET_MASK(gpio[GPIOAO_OUT_OFFSET], BIT2MASK(GPIOAO_13_OUT_BIT));	
 	/* Set low */
-	/*gpio[GPIOAO_OFF1] &= ~(1u<<(LED_BIT+16));*/
+	CLR_MASK(gpio[GPIOAO_OUT_OFFSET], BIT2MASK(GPIOAO_13_OUT_BIT));	
 	
 	for(;;)
 		;
