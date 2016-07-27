@@ -20,7 +20,7 @@
 #define ODROIDC2_GPIO_H
 
 #ifndef ODROIDC2_H
-#error Please, do not include any board specific header file except odroidc2.h
+#error Please, do not include directly any board specific header file except odroidc2.h
 #endif
 
 /* Refer to the SoC manual for all the addresses referred to some devices
@@ -74,14 +74,19 @@
  *
  *   final_address = GPIOAO_BASE + <OFFSET> * 4
  */
-#define GPIOAO_OEN_OFFSET     0x09
-#define GPIOAO_OUT_OFFSET     0x09
-#define GPIOAO_IN_OFFSET      0x0a
-#define GPIOAO_PUPDEN_OFFSET  0x0b
-#define GPIOAO_PUPD_OFFSET    0x0b
+#define GPIOAO_OEN_OFFSET     0x09 /* Output enable */
+#define GPIOAO_OUT_OFFSET     0x09 /* Output value (R/W) */
+#define GPIOAO_IN_OFFSET      0x0a /* Input value (R) */
+#define GPIOAO_PUPDEN_OFFSET  0x0b /* Pull-Up/Down enable (R/W) */
+#define GPIOAO_PUPD_OFFSET    0x0b /* Pull-Up/Down value (R/W) */
 
+/* Number of register in the bank AO */
 #define GPIOAO_13             13
 
+/* Unfortunatelly this SoC does not have a coherent
+ * schema for accessing GPIO registers like all
+ * port related bits on the same address. This led
+ * to the separate definition of every single bit */
 #define GPIOAO_13_OEN_BIT     (0  + GPIOAO_13)
 #define GPIOAO_13_OUT_BIT     (16 + GPIOAO_13)
 #define GPIOAO_13_IN_BIT      (0  + GPIOAO_13)
