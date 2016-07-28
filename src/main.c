@@ -18,25 +18,33 @@
 
 #include "odroidc2.h"
 
-volatile unsigned int *gpio = (unsigned int *) GPIOAO_BASE;
+/* Pointer to GPIO registers for AO bank */
+volatile unsigned int *gpio_ao = (unsigned int *) GPIOAO_BASE;
+
+/* From SoC manual you can see the length of these registers. Although
+ * ARM 64bit allow to have 64bit addresses, these ones are 32 bit long.
+ * Be careful on the cast you make. */
 
 void main(void)
 {
+	/* PINMUX base registers */
 	volatile unsigned int *ao_reg =  (unsigned int *) AO_REG;
 	volatile unsigned int *ao_reg2 = (unsigned int *) AO_REG2;
 	
+	/* Turning off the SYS_LED and then loop indefinitely */
+
 	/* Reset mux */
 	CLR_MASK(*ao_reg, AO_REG_GPIOAO_13_MASK);
 	CLR_MASK(*ao_reg2, AO_REG2_GPIOAO_13_MASK);
 	
 	/* Set as an output */
-	CLR_MASK(gpio[GPIOAO_OEN_OFFSET], BIT2MASK(GPIOAO_13_OEN_BIT));
-	CLR_MASK(gpio[GPIOAO_PUPDEN_OFFSET], BIT2MASK(GPIOAO_13_PUPDEN_BIT));
+	CLR_MASK(gpio_ao[GPIOAO_OEN_OFFSET], BIT2MASK(GPIOAO_13_OEN_BIT));
+	CLR_MASK(gpio_ao[GPIOAO_PUPDEN_OFFSET], BIT2MASK(GPIOAO_13_PUPDEN_BIT));
 	
 	/* Set high */
-	SET_MASK(gpio[GPIOAO_OUT_OFFSET], BIT2MASK(GPIOAO_13_OUT_BIT));	
+	SET_MASK(gpio_ao[GPIOAO_OUT_OFFSET], BIT2MASK(GPIOAO_13_OUT_BIT));
 	/* Set low */
-	CLR_MASK(gpio[GPIOAO_OUT_OFFSET], BIT2MASK(GPIOAO_13_OUT_BIT));	
+	/*CLR_MASK(gpio[GPIOAO_OUT_OFFSET], BIT2MASK(GPIOAO_13_OUT_BIT));*/
 	
 	for(;;)
 		;
