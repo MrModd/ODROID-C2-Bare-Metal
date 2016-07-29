@@ -25,7 +25,7 @@ endif
 INSTALLDIR := ../tftp
 
 # Set compilation args
-CFLAGS = -Wall -Wextra -Wpedantic -O2 -ffreestanding
+CFLAGS = -Wall -Wextra -Wpedantic -O2 -ffreestanding -std=c99
 ARCHFLAGS = -march=armv8-a -mcpu=cortex-a53 -mtune=cortex-a53
 
 # Set install invocation
