@@ -23,12 +23,21 @@
 
 /* Utility functions */
 
+/* Set the n-th bit of a 32bit variable */
 #define BIT2MASK(bit)            \
 		(1u<<(bit))
 
+/* Set the n-th bit of a 64bit variable */
+#define BIT2MASK_64(bit)            \
+		(1ull<<(bit))
+
+/* Set a bitmask in a register preserving
+ * other bits */
 #define SET_MASK(reg, mask)      \
 		reg |= (mask)
 
+/* Clear a bitmask in a register preserving
+ * other bits */
 #define CLR_MASK(reg, mask)      \
 		reg &= ~(mask)
 
