@@ -109,3 +109,36 @@ Finally if you load the program from U-Boot and you jump at the specified
 address you shouldn't see anythig new after the *go* command. If the
 program was incorrect you probably would have seen an exception managed
 by U-Boot.
+
+## 02 - Led
+
+A feedback is needed in order to test if program is really running on
+the board. The simplest thing to do is to change the state of a GPIO
+wired to a LED and check whether the light goes on or off.
+ODROID C2 has one LED wired to the bank AO of the GPIO controller.
+From the schematics of the board you can understand at which line it
+is wired. It results that the blue LED is wired to the *SYS_LED* signal
+that reach the SoC through the **GPIOAO_13** line. Note that an **Low**
+level to the GPIO turns the LED on, because SYS_LED signal is wired to
+the cathode.
+
+The board powers up with the blue LED turned on. So the purpose of
+this part is to turn it off setting an **High** level to the GPIO
+register.
+
+Generally there are several registers related to each GPIO:
+
+- **PINMUX**: these registers define the purpose of the SoC pin in the
+              case that different functions are associated to the same
+              pin;
+- **CONTROL**: these registers define the direction of the GPIO, the
+               value read from the port in case of Input or written
+               to the latch in case of Output and the Pull-up/down.
+
+These registers have to be found on the SoC manual.
+
+The *odroidc2.h* header file should be used as general definition file
+for the board. This loads all other header files organized by subsystem.
+*odroidc2_gpio.h* contains all the definitions related to the GPIOs
+as well as all the bitmask needed in order to change the state of the
+LED.
