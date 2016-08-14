@@ -142,3 +142,9 @@ for the board. This loads all other header files organized by subsystem.
 *odroidc2_gpio.h* contains all the definitions related to the GPIOs
 as well as all the bitmask needed in order to change the state of the
 LED.
+
+### Testing
+
+This is a simple task: run the program and verify that the blue LED turns
+off. If it doesn't try checking first all the addresses you used and then
+read the assembly code in *program.lst* file looking for strange behaviour.
