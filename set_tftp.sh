@@ -27,7 +27,7 @@ DNSMASQ_GIT="git://thekelleys.org.uk/dnsmasq.git"
 DNSMASQ_COMMIT="master"
 DNSMASQ_DIR="$CURR/dnsmasq"
 TFTP_DIR="$CURR/tftp"
-IFACE="enp0s20u1"
+IFACE="eth0"
 IP="10.0.0.1/24"
 DNSMASQ_ARGS="--no-daemon --port=0 --enable-tftp --tftp-root=$TFTP_DIR"
 #########################################################
@@ -82,12 +82,13 @@ compile_dnsmasq() {
 }
 
 start_dnsmasq() {
-	echo -e "${TXT_COLOR}Running Dnsmasq with sudo...${RST_COLOR}"
+	echo -e "${TXT_COLOR}Trying to set static IP $IP to $IFACE with sudo...${RST_COLOR}"
 	
 	mkdir -p "$TFTP_DIR"
 	
-	
-	sudo ip a add $IP dev $IFACE 2> /dev/null
+	sudo ip a add $IP dev $IFACE
+
+	echo -e "${TXT_COLOR}Running Dnsmasq with sudo...${RST_COLOR}"
 	
 	sudo "$DNSMASQ_DIR/src/dnsmasq" $DNSMASQ_ARGS
 	if [ $? != 0 ] ; then
@@ -109,7 +110,7 @@ clean_all() {
 
 SCRIPT_NAME=$0
 print_help() {
-	echo -e "Usage $SCRIPT_NAME [OPTIONS]" >&2
+	echo -e "Usage $SCRIPT_NAME [OPTIONS] [INTERFACE]" >&2
 	echo -e "\nOPTIONS:" >&2
 	echo -e "\t-h, -?" >&2
 	echo -e "\t\tshow this help" >&2
@@ -117,6 +118,9 @@ print_help() {
 	echo -e "\t\tskip updating if Dnsmasq is already present" >&2
 	echo -e "\t-z" >&2
 	echo -e "\t\tdelete all downloaded and compiled files" >&2
+	echo -e "\nINTERFACE:" >&2
+	echo -e "\tTry to set IP address to the given interface." >&2
+	echo -e "\tIf not specified $IFACE will be used as default." >&2
 }
 
 SKIP_PULL=""
@@ -136,6 +140,12 @@ case "$opt" in
 		;;
 esac
 done
+
+shift $((OPTIND-1))
+
+if [ $1 ] ; then
+	IFACE=$1
+fi
 
 if [ ! -d "$DNSMASQ_DIR" ] ; then
 	SKIP_PULL=""

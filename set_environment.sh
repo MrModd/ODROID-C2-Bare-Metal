@@ -38,6 +38,8 @@ if [ "$0" = "$BASH_SOURCE" ] ; then
 	exit 1
 fi
 
+echo "Setting environment variables..."
+
 "${CROSS_COMPILE}gcc" -v &> /dev/null
 if [ $? != 0 ] ; then
 	echo "Error setting CROSS_COMPILE variable. Crosscompiler not found." >&2
@@ -46,13 +48,23 @@ fi
 
 export CROSS_COMPILE="$CROSS_COMPILE"
 export CC="gcc"
+export CPP="cpp"
 export AS="as"
 export LD="ld"
 export NM="nm"
 export OBJCOPY="objcopy"
 export OBJDUMP="objdump"
 
+echo
 echo "CROSS_COMPILE=$CROSS_COMPILE"
-echo "DONE."
+echo "CC=$CC"
+echo "CPP=$CPP"
+echo "AS=$AS"
+echo "LD=$LD"
+echo "NM=$NM"
+echo "OBJCOPY=$OBJCOPY"
+echo "OBJDUMP=$OBJDUMP"
+echo
+echo "Done."
 
 return 0
