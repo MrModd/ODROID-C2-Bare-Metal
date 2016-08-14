@@ -20,6 +20,7 @@
 #define ODROIDC2_H
 
 #include "odroidc2_gpio.h"
+#include "odroidc2_cpu.h"
 
 /* Utility functions */
 

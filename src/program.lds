@@ -22,7 +22,7 @@
  */
 
 /* Entry point function of the program */
-ENTRY(main)
+ENTRY(_reset)
 
 /* Memory addresses (refer to the SoC manual) */
 mem_start = 0x11000000;
@@ -31,24 +31,38 @@ mem_end	  = 2 * 1024 * 1024 * 1024;
 /* In which order sections should be written */
 SECTIONS
 {
-    . = mem_start;			/* Set current address to mem_start */
-    .text : {
-        *(.text)			/* Write code sections of all source files */
-        . = ALIGN(4);		/* At the end of all .text sections, align current address to the next word */
-    }
-    .rodata : {
-        *(.rodata)			/* Write all Read-Only data (eg. constant strings) */
-        . = ALIGN(4);		/* Align current address to the next word */
-    }
-    .data : {
-        *(.data)			/* Write all global variables */
-        . = ALIGN(4);		/* Align current address to the next word */
-    }
-    .bss : {
-        _bss_start = .;		/* Save current address in _bss_start variable */
-        *(.bss)				/* Write all static variables that should be initialized to 0 */
-        *(COMMON)
-        . = ALIGN(4);		/* Align current address to the next word */
-        _bss_end = .;		/* Save current address in _bss_end variable */
-    }
+	. = mem_start;		/* Set current address to mem_start */
+	
+	.text : {
+		startup.o(.text)	/* Put the _reset symbol as first of
+		                	 * the .text section */
+		. = ALIGN(4);
+		*(.text)	/* Write code sections of all source files */
+		. = ALIGN(4);	/* At the end of all .text sections,
+		             	 * align current address to the next word */
+	}
+	
+	.rodata : {
+		*(.rodata)	/* Write all Read-Only data (eg. constant strings) */
+		. = ALIGN(4);	/* Align current address to the next word */
+	}
+	
+	.data : {
+		*(.data)	/* Write all global variables */
+		. = ALIGN(4);	/* Align current address to the next word */
+	}
+	
+	.bss : {
+		_bss_start = .;	/* Save current address in _bss_start variable */
+		*(.bss)		/* Write all static variables that should be
+		       		* initialized to 0 */
+		*(COMMON)
+		. = ALIGN(4);	/* Align current address to the next word */
+		_bss_end = .;	/* Save current address in _bss_end variable */
+	}
+
+	. = mem_end;
+	. = ALIGN(16);		/* Manual says the stack must be aligned
+	              		 * to 16 bytes */
+	stack_top = .;		/* This label will be used in startup.S */
 }

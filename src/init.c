@@ -16,42 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  \***********************************************************************/
 
-#include "odroidc2.h"
 #include "common.h"
 
-/* Pointer to GPIO registers for AO bank */
-volatile unsigned int *gpio_ao = (unsigned int *) GPIOAO_BASE;
-
-/* From SoC manual you can see the length of these registers. Although
- * ARM 64bit allow to have 64bit addresses, these ones are 32 bit long.
- * Be careful on the cast you make. */
-
-void main(void)
+/**
+ * init_bss: initialze bss section setting to
+ *           zero all the content
+ */
+static void init_bss(void)
 {
-	/* PINMUX base registers */
-	volatile u32 *ao_reg =  (u32 *) AO_REG;
-	volatile u32 *ao_reg2 = (u32 *) AO_REG2;
-	
-	/* Turning off the SYS_LED and then loop indefinitely */
+	extern u64 _bss_start, _bss_end;
+	u64 *p;
 
-	/* Reset mux */
-	CLR_MASK(*ao_reg, AO_REG_GPIOAO_13_MASK);
-	CLR_MASK(*ao_reg2, AO_REG2_GPIOAO_13_MASK);
-	
-	/* Set as an output */
-	CLR_MASK(gpio_ao[GPIOAO_OEN_OFFSET], BIT2MASK(GPIOAO_13_OEN_BIT));
-	CLR_MASK(gpio_ao[GPIOAO_PUPDEN_OFFSET], BIT2MASK(GPIOAO_13_PUPDEN_BIT));
-	
-	for(;;) {
-
-		/* Set high */
-		SET_MASK(gpio_ao[GPIOAO_OUT_OFFSET], BIT2MASK(GPIOAO_13_OUT_BIT));
-
-		loop_delay(1000000lu);
-	
-		/* Set low */
-		CLR_MASK(gpio_ao[GPIOAO_OUT_OFFSET], BIT2MASK(GPIOAO_13_OUT_BIT));
-
-		loop_delay(1000000lu);
+	for (p = &_bss_start; p < &_bss_end; p++) {
+		*p = 0llu;
 	}
+}
+
+void _init(void)
+{
+	init_bss();
+
+	main();
 }
