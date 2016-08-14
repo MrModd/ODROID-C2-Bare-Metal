@@ -26,7 +26,8 @@ INSTALLDIR := ../tftp
 
 # Set compilation args
 CFLAGS = -Wall -Wextra -Wpedantic -O2 -ffreestanding -std=c99
-ARCHFLAGS = -march=armv8-a -mcpu=cortex-a53 -mtune=cortex-a53
+ARCHFLAGS = -march=armv8-a -mcpu=cortex-a53 -mabi=lp64
+ARCHCFLAGS = $(ARCHFLAGS) -mtune=cortex-a53
 
 # Set install invocation
 INSTALL = install -m 755
@@ -81,15 +82,15 @@ $(COBJS): $(HFILES)
 
 # Generate objects file from assembly sources
 %.o: %.S
-	$(CROSS_COMPILE)$(AS) $(ARCHFLAGS) -o $@ $<
+	$(CROSS_COMPILE)$(CPP) $< | $(CROSS_COMPILE)$(AS) $(ARCHFLAGS) -o $@
 
 # Generate objects file from C sources
 %.o: %.c 
-	$(CROSS_COMPILE)$(CC) $(CFLAGS) $(ARCHFLAGS) -c $<
+	$(CROSS_COMPILE)$(CC) $(CFLAGS) $(ARCHCFLAGS) -c $<
 
 # Generate assembly code from C sources
 %.s: %.c
-	$(CROSS_COMPILE)$(CC) $(CFLAGS) $(ARCHFLAGS) -S $<
+	$(CROSS_COMPILE)$(CC) $(CFLAGS) $(ARCHCFLAGS) -S $<
 
 
 
