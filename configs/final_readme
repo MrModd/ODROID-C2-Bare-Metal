@@ -15,8 +15,8 @@ the SD card as it appears on your computer.
    b. Type p to list partitions. There should be no partitions left.
    c. Type n, then p for primary, 1 for the first partition on the drive,
       enter twice to accept the default starting and ending sectors.
-   d. Type t, then 1 to select first partition and then b to change the
-      partition type into FAT32.
+   d. Type t, first partition will be selected automatically, then
+      type b to change the partition type into FAT32.
    e. Write the partition table and exit by typing w.
 4. Create the filesystem:
    mkfs.fat -F 32 /dev/sdX1
