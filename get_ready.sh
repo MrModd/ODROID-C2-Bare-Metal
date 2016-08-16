@@ -27,7 +27,10 @@ CC_NAME="gcc-linaro-aarch64-none-elf-4.9-2014.09_linux"
 CC_URLS=("https://releases.linaro.org/14.09/components/toolchain/binaries/gcc-linaro-aarch64-none-elf-4.9-2014.09_linux.tar.xz" \
 			"http://dn.odroid.com/toolchains/gcc-linaro-aarch64-none-elf-4.9-2014.09_linux.tar.xz")
 UBOOT_GIT="https://github.com/hardkernel/u-boot.git"
-UBOOT_COMMIT="odroidc2-v2015.01"
+# Last commit (61f29bb) in branch odroidc2-v2015.01 breaks compilation.
+# Waiting for a patch reverting to a previous working commit.
+UBOOT_COMMIT="2fcbc68"
+#UBOOT_COMMIT="odroidc2-v2015.01"
 BOOT_FILES=("https://github.com/hardkernel/u-boot/raw/odroidc2-v2015.01/sd_fuse/bl1.bin.hardkernel" \
 			"https://github.com/hardkernel/u-boot/raw/odroidc2-v2015.01/sd_fuse/sd_fusing.sh")
 UBOOT_DIR="$CURR/uboot"
@@ -99,18 +102,29 @@ clone_uboot() {
 	echo -e "${TXT_COLOR}Cloning U-boot...${RST_COLOR}"
 	
 	if [ ! -d "$UBOOT_DIR" ] ; then
-		git clone $UBOOT_GIT -b $UBOOT_COMMIT "$UBOOT_DIR"
+		git clone $UBOOT_GIT -b master "$UBOOT_DIR"
 		if [ $? != 0 ] ; then
 			echo -e "${ERR_COLOR}Cannot clone repository.${RST_COLOR}" >&2
+			return 1
+		fi
+		git -C "$UBOOT_DIR" checkout $UBOOT_COMMIT
+		if [ $? != 0 ] ; then
+			echo -e "${ERR_COLOR}Cannot checkout to commit $UBOOT_COMMIT.${RST_COLOR}" >&2
 			return 1
 		fi
 	else
 		echo -e "${CON_COLOR}Already present.${RST_COLOR}"
 		echo -e "${TXT_COLOR}Pulling last changes...${RST_COLOR}"
 		
+		git -C "$UBOOT_DIR" checkout master
 		git -C "$UBOOT_DIR" pull
 		if [ $? != 0 ] ; then
-			echo -e "${ERR_COLOR}Cannot pull repository.${RST_COLOR}" >&2
+			echo -e "${ERR_COLOR}Cannot pull from origin.${RST_COLOR}" >&2
+			return 1
+		fi
+		git -C "$UBOOT_DIR" checkout $UBOOT_COMMIT
+		if [ $? != 0 ] ; then
+			echo -e "${ERR_COLOR}Cannot checkout to commit $UBOOT_COMMIT.${RST_COLOR}" >&2
 			return 1
 		fi
 	fi
