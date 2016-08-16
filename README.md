@@ -34,7 +34,7 @@ Its characteristics are:
 - GPIO, I2C, UART, ADC on main 40 pin header
 - I2S on separate header
 
-For a full description of the board visit the [official page] [ODROID-C2].
+For a full description of the board visit the [official page][ODROID-C2].
 
 ### Official Wiki
 
@@ -87,7 +87,7 @@ The *master* branch contains just the basic scripts required in order
 get all the essential tools:
 
 - **Cross compiler**: required in order to compile bare-metal
-                     programs and bootloader for target architecture;
+                      programs and bootloader for target architecture;
 - **Bootloader**: the first external program the CPU calls, this
                   board uses [U-Boot] as described on the official
                   [Wiki][wiki_uboot] page;
@@ -107,38 +107,45 @@ adds new features to all previous ones.
 
 There are two main scripts called **get_ready.sh** and **set_tftp.sh**. First one
 is intended to prepare the environment for crosscompiling and for booting the board.
-The second one sets up a local TFTP server that deliver the binary program to the
+The second one sets up a local TFTP server that delivers the binary program to the
 board if connected via ethernet to the machine where you are compiling.
 
-Invoke the scripts with "-h" option for an help on the correct parameters to pass.
+Invoke these scripts with "-h" option for an help on the correct parameters to pass.
 
 ```sh
 $ ./get_ready.sh -cup
 ```
 this invocation of *get_ready.sh* downloads the correct toolchain, clones U-Boot
 repository and compiles it with the cross compiler. All needed files will be put
-in a folder called **sdcard/**. Read the README file inside it for a guide to the
+in a folder called **sdcard/**. Read the README file inside it for a manual to the
 preparation of the MicroSD for the board.
 
-To start the TFTP server modify first lines of *set_tftp.sh* script. Check that
-"IFACE" variable is correct for your network interface where the board is connected.
-After that use next invocation to start the server:
+To start the TFTP server invoke the script *set_tftp.sh*. By default it will set
+a static "10.0.0.1/24" ip to "eth0" and then it will start Dnsmasq on that interface.
+In order to change the ethernet interface pass the correct name as last argument
+of the invocation. For example:
 
 ```sh
-$ ./set_tftp.sh
+$ ./set_tftp.sh enp0
 ```
+
+will use "enp0" instead of "eth0".
+
+You should not change the IP address because it is also referenced by "boot.ini"
+file that goes on the MicroSD card. If you need to modify this static address
+remember to update "boot.ini" as well.
 
 Note that this script tries to set a static IP address to the network interface
 before starting the server. If you encounter some issues obtaining the file
 with TFTP protocol check the correctness of the IP on the ethernet interface
 of your PC. NetworkManager, if present, could interfer with this script resetting
-the interface whenever the LAN connection is absent. If you have any problems you
+the interface whenever the LAN connection is absent. If you have any problem you
 can always copy the binary file to the microSD card and then uncomment the line
 on "boot.ini" that enables the local boot.
 
-Finally use **set_environment.sh** in order to export "CROSS_COMPILE" and others
-variables required by Makefiles to get the right compiler. You should source
-this script instead of invoke it directly as shown below:
+Finally use **set_environment.sh** in order to export "CROSS_COMPILE" and other
+variables required by Makefile to get the right compiler. You should source
+this script as shown below instead of invoke it directly:
 
 ```sh
 $ source ./set_environment.sh
@@ -158,12 +165,12 @@ for 32bit. Under Ubuntu you should resolve installing the required 32bit librari
 On other distributions install the equivalent packages.
 
 [ODROID-C2]: <http://www.hardkernel.com/>
-[ODROID portal]: <http://odroid.com/dokuwiki/doku.php?id=en:odroid-c2>
+[ODROID portal]: <http://odroid.com/dokuwiki/doku.php?id=en%3Aodroid-c2>
 [Board schematics]: <http://dn.odroid.com/S905/Schematic/odroid-c2_rev0.2_20160226.pdf>
 [SoC manual]: <http://dn.odroid.com/S905/DataSheet/S905_Public_Datasheet_V1.1.4.pdf>
 [Technical Reference Manual]: <http://infocenter.arm.com/help/topic/com.arm.doc.ddi0500g/DDI0500G_cortex_a53_trm.pdf>
 [Programmer's Guide]: <https://static.docs.arm.com/den0024/a/DEN0024.pdf>
 [Cortex-A53]: <https://developer.arm.com/products/processors/cortex-a/cortex-a53>
 [U-Boot]: <http://www.denx.de/wiki/U-Boot>
-[wiki_uboot]: <http://odroid.com/dokuwiki/doku.php?id=en:c2_building_u-boot>
+[wiki_uboot]: <http://odroid.com/dokuwiki/doku.php?id=en%3Ac2_building_u-boot>
 [Dnsmasq]: <http://www.thekelleys.org.uk/dnsmasq/doc.html>
