@@ -25,6 +25,15 @@
 
 #include "common.h"
 
+/**
+ * _read_CurrentEL: get the current exception level
+ * returns: a 64bit value where bits [3:2] encodes the
+ *          current exception level as follow:
+ *          - 00 -> EL0
+ *          - 01 -> EL1
+ *          - 10 -> EL2
+ *          - 11 -> EL3
+ */
 #define _read_CurrentEL() ({	\
 	u64 value;          	\
 	__asm__ __volatile__ ("mrs %[reg], CurrentEL" : [reg] "=r" (value) : : "memory"); \

@@ -148,3 +148,75 @@ LED.
 This is a simple task: run the program and verify that the blue LED turns
 off. If it doesn't try checking first all the addresses you used and then
 read the assembly code in *program.lst* file looking for strange behaviour.
+
+## 03 - Blink
+
+For this step the important is to put the CPU in a known state and
+initialize the stack pointer so that function calls can work.
+
+ARMv8-A introduces two **execution states**: Aarch32 and Aarch64. On
+the first one you can use A32 or T32 instruction sets, mostly
+compatible with ARMv7-A architecture, On the second one there's the A64
+instruction set with 32bit instructions and 64bit registers.
+
+Hierarchical protection domains (ring level) are guaranteed in Aarch64
+by 4 **exception level**: EL3, EL2, EL1, EL0. Where EL3 is the most
+privileged and EL0 the least privileged. Generally, registers whose
+name end with *_ELx* means that can be accessed from level ELx and
+superior. Aarch32 keeps the privilege definition of ARMv7-A.
+
+Passing from one execution state to the other or from an exception level
+to another one must be done on an exception boundary. EL0 is used for
+user applications, EL1 for the OS (supervisor), EL2 (eventually) for the
+hypervisor and finally EL3 for secure applications.
+
+### startup.S
+
+The goal is to determine the current execution level and then switch to
+EL1 in Aarch64. This can be done by setting desired state on some special
+registers and then cause an exception return (with ERET instruction).
+The file *startup.S* do exactly this. It reads current state from
+special register "CurrentEL" and then jumps to the right label. If in
+EL3 it sets EL2 in Aarch64 and then drop to EL2. When in EL2 (because
+of the drop or because it started in this exception level) it sets
+the endianess and the FPU traps for the same EL and it prepares the
+execution state for EL1. At this point the **stack pointer** is
+initialized for EL1 and set to the address at the end of the memory
+space. This address was defined in the linker script file *program.lds*.
+Then privileges are dropped again from EL2 to EL1 and finally the
+system control register for this execution level is initialized.
+
+At this point, unless this code was first executed from EL0 (but
+it won't happen if invoked from the bootloader), the CPU is in
+the exception level EL1. If we started from EL2 or EL3 we are also
+sure that the current execution state is Aarch64.
+
+### init.c
+
+After *startup.S* execution jumps to function *_init()* in *init.c*.
+This file for now initializes only the .bss section of the program,
+but it will be used also for other purposes. Length of .bss section
+is obtained by the linker script *program.lds* that defined two
+labels, *_bss_start* and *_bss_end* at the beginning and at the
+end of the section.
+
+### loop_delay() function
+
+This is the first version of a delay function. It is necessary in
+order to wait from a state of the LED and another, but at this
+time it is inaccurate. Basically it counts until the number specified
+as argument and the speed of this operation depends mostly on
+the CPU frequency.
+
+### Test
+
+Running the program should now cause the LED to blink. A useful
+counter test can be to define the "stack_top" label in *program.lds*
+to a value out of the memory space, for example 3GB, and see
+if without a correct stack the program would work.
+If this test fails, meaning that the LED doesn't blink, it tells
+you two things:
+
+- the program was invoked from an exception level greater than
+  EL1, because the stack pointer is set at EL2;
+- the drop of the privileges worked fine.

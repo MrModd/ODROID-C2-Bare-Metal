@@ -30,7 +30,7 @@ extern void main(void);
 static inline void loop_delay(u64 d)
 {
 	/* Making c volatile prevents compiler to
-	 * optimize next useless while loop */
+	 * optimize next empty while loop */
 	volatile u64 c = 0;
 
 	while (d-- > 0) {
