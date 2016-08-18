@@ -208,7 +208,7 @@ time it is inaccurate. Basically it counts until the number specified
 as argument and the speed of this operation depends mostly on
 the CPU frequency.
 
-### Test
+### Testing
 
 Running the program should now cause the LED to blink. A useful
 counter test can be to define the "stack_top" label in *program.lds*
