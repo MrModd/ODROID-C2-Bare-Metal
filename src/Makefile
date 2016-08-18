@@ -92,6 +92,10 @@ $(COBJS): $(HFILES)
 %.s: %.c
 	$(CROSS_COMPILE)$(CC) $(CFLAGS) $(ARCHCFLAGS) -S $<
 
+# Run the preprocessor on the assembly file
+%.s: %.S
+	$(CROSS_COMPILE)$(CPP) $< > $@
+
 
 
 # Don't delete these files if make get killed
