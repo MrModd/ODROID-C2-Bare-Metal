@@ -50,7 +50,7 @@ For this step the important is to generate some code that can run on the
 processor and possibly test if it's really running.
 
 Just three files are needed: a source file containing the C code to be
-translated into AARCH64 assembly, a linker script that describe how to
+translated into ARMv8-A assembly, a linker script that describe how to
 assemble the binary and a makefile that automate the build process.
 
 ### main.c
