@@ -220,3 +220,61 @@ you two things:
 - the program was invoked from an exception level greater than
   EL1, because the stack pointer is set at EL2;
 - the drop of the privileges worked fine.
+
+## 04 - Memory Barrier
+
+A Memory Barrier is an instruction that force an ordering constraint
+on memory accesses. This is sometime necessary due to CPU instruction
+prefetching and/or pipeline.
+
+As example consider two instruction that access the memory: a store
+operation followed by a read operation on the same memory location.
+Because of the pipeline the read instruction is executed before
+the ending of the store operation. This means that probably the
+second instruction reads a different value respect of what the
+store instruction wrote. A memory barrier prevents this from
+happening forcing the CPU to delay the read instruction until
+all the store operations preceding the barrier end.
+
+There are also variations of the memory barrier just described.
+They differs on which instructions must be delayed and which
+instructions can cause a delay. For example you can put a memory
+barrier just for read accesses after a write access or for both
+reads and writes after a write access. In ARMv8 these variations
+are specified by the argument taken by the assembly instruction
+that implements the barrier.
+
+Memory barrier is not the only kind of barriers that can be
+used. A Data Synchronization Barrier extends the concept of
+memory barrier also to all instructions that follow the
+barrier. CPU stalls until all memory accesses are completed.
+An Instruction Synchronization Barrier, instead, forces the
+CPU to discard all the instructions already on the pipeline.
+
+At this stage of development a memory barrier is used to speedup
+the execution of the delay function because a barrier is
+generally faster than a store in memory. In file "common.h" the
+assignment used in the loop, used to prevent a compiler optimization,
+is substituted by a memory barrier.
+
+Moreover an instruction synchronization barrier should be
+used after changing the exception level so that every
+instruction that goes on the CPU after that executes from
+the new exception level. You can find this barrier in
+"startup.S" after calling the two labels ".LEL2_to_EL1"
+and ".LEL3_to_EL2".
+
+### Testing
+
+Due to the faster speed of execution of the memory barrier in
+respect of the memory assignment the LED shoud blink faster.
+Moreover the produced assembly should have less instructions
+for the *loop_delay()* function. In fact the volatile modifier
+for the variable tells the compiler that the value could change
+in memory even if it is never used from the code. This forces
+the compiler to take its vaule from memory every time it is
+accessed and store it in memory after every write.
+The assign operation in the while loop is therefore always
+translated in a read from memory, an update of its value and
+a store. Three instructions that are substituted by a single
+barrier instruction.
