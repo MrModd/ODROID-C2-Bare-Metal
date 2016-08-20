@@ -88,6 +88,12 @@ _reset:
 	bl .LEL3_to_EL2
 	/* Now we are in state EL2 */
 
+	/* Empty the pipeline after changing
+	 * exception level so that next
+	 * instructions are fetched and
+	 * executed from the correct state */
+	ISB SY				/* Instruction Sync Barrier */
+
 2:
 	/* Set little endianess */
 	mrs tmp, SCTLR_EL2
@@ -108,6 +114,12 @@ _reset:
 
 	bl .LEL2_to_EL1
 	/* Now we are in state EL1 */
+
+	/* Empty the pipeline after changing
+	 * exception level so that next
+	 * instructions are fetched and
+	 * executed from the correct state */
+	ISB SY				/* Instruction Sync Barrier */
 
 1:
 	/* Set the system control reg for EL1 */

@@ -20,6 +20,7 @@
 #define COMMON_H
 
 #include "types.h"
+#include "odroidc2.h"
 
 extern void main(void);
 
@@ -31,10 +32,12 @@ static inline void loop_delay(u64 d)
 {
 	/* Making c volatile prevents compiler to
 	 * optimize next empty while loop */
-	volatile u64 c = 0;
+	//volatile u64 c = 0;
 
 	while (d-- > 0) {
-		c+=d;
+		//c+=d;
+		/* A memory barrier is faster than a write in memory */
+		__dmb();
 	}
 }
 
