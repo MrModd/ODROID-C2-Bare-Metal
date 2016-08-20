@@ -47,11 +47,11 @@ void main(void)
 		/* Set high */
 		SET_MASK(gpio_ao[GPIOAO_OUT_OFFSET], BIT2MASK(GPIOAO_13_OUT_BIT));
 
-		loop_delay(1000000lu);
+		loop_delay(1000000llu);
 	
 		/* Set low */
 		CLR_MASK(gpio_ao[GPIOAO_OUT_OFFSET], BIT2MASK(GPIOAO_13_OUT_BIT));
 
-		loop_delay(1000000lu);
+		loop_delay(1000000llu);
 	}
 }
