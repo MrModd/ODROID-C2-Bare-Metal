@@ -162,6 +162,12 @@ for 32bit. Under Ubuntu you should resolve installing the required 32bit librari
 # apt-get install libc6-i386 lib32stdc++6 lib32gcc1 lib32ncurses5 lib32z1
 ```
 
+Or under RHEL/CentOS/Fedora:
+
+```sh
+# yum install glibc.i686 libstdc++.i686 zlib.i686
+```
+
 On other distributions install the equivalent packages.
 
 [ODROID-C2]: <http://www.hardkernel.com/>
