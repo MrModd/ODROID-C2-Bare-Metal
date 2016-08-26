@@ -28,7 +28,7 @@
 		(1u<<(bit))
 
 /* Set the n-th bit of a 64bit variable */
-#define BIT2MASK_64(bit)            \
+#define BIT2MASK_64(bit)         \
 		(1ull<<(bit))
 
 /* Set a bitmask in a register preserving
