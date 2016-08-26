@@ -92,8 +92,12 @@ $(COBJS): $(HFILES)
 %.s: %.c
 	$(CROSS_COMPILE)$(CC) $(CFLAGS) $(ARCHCFLAGS) -S $<
 
-# Run the preprocessor on the assembly file
-%.s: %.S
+# Run the preprocessor on the assembly files
+%.i: %.S
+	$(CROSS_COMPILE)$(CPP) $< > $@
+
+# Run the preprocessor on the c files
+%.i: %.c
 	$(CROSS_COMPILE)$(CPP) $< > $@
 
 
@@ -105,5 +109,5 @@ $(COBJS): $(HFILES)
 .PHONY: clean
 
 clean:
-	$(RM) *~ *.o *.s *.bin *.elf *.lst *.sym tags
+	$(RM) *~ *.o *.s *.i *.bin *.elf *.lst *.sym tags
 
