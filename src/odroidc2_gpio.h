@@ -31,8 +31,8 @@
 /* === GPIO bank AO === */
 
 /* PINMUX registers */
-#define AO_REG  0xc8100014
-#define AO_REG2 0xc8100018
+iomemdef(AO_REG, 0xc8100014);
+iomemdef(AO_REG2, 0xc8100018);
 
 /* For each GPIO different functions can be selected.
  * Each function is selectable asserting the correct
@@ -80,6 +80,12 @@
 #define GPIOAO_PUPDEN_OFFSET  0x0b /* Pull-Up/Down enable (R/W) */
 #define GPIOAO_PUPD_OFFSET    0x0b /* Pull-Up/Down value (R/W) */
 
+iomemdef(GPIOAO_OEN, GPIOAO_BASE + (GPIOAO_OEN_OFFSET * 4));
+iomemdef(GPIOAO_OUT, GPIOAO_BASE + (GPIOAO_OUT_OFFSET * 4));
+iomemdef(GPIOAO_IN, GPIOAO_BASE + (GPIOAO_IN_OFFSET * 4));
+iomemdef(GPIOAO_PUPDEN, GPIOAO_BASE + (GPIOAO_PUPDEN_OFFSET * 4));
+iomemdef(GPIOAO_PUPD, GPIOAO_BASE + (GPIOAO_PUPD_OFFSET * 4));
+
 /* Number of register in the bank AO */
 #define GPIOAO_13             13
 
@@ -92,4 +98,5 @@
 #define GPIOAO_13_IN_BIT      (0  + GPIOAO_13)
 #define GPIOAO_13_PUPDEN_BIT  (0  + GPIOAO_13)
 #define GPIOAO_13_PUPD_BIT    (16 + GPIOAO_13)
+
 #endif
