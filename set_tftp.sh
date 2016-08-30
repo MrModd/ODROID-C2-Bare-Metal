@@ -51,26 +51,40 @@ clone_dnsmasq() {
 			echo -e "${ERR_COLOR}Cannot clone repository.${RST_COLOR}" >&2
 			return 1
 		fi
-		git -C "$DNSMASQ_DIR" checkout $DNSMASQ_COMMIT
+
+		PWD=$(pwd)
+		cd "$DNSMASQ_DIR"
+
+		git checkout $DNSMASQ_COMMIT
 		if [ $? != 0 ] ; then
 			echo -e "${ERR_COLOR}Cannot checkout to commit $DNSMASQ_COMMIT.${RST_COLOR}" >&2
+			cd "$PWD"
 			return 1
 		fi
+
+		cd "$PWD"
 	else
 		echo -e "${CON_COLOR}Already present.${RST_COLOR}"
 		echo -e "${TXT_COLOR}Pulling last changes...${RST_COLOR}"
 		
-		git -C "$DNSMASQ_DIR" checkout master
-		git -C "$DNSMASQ_DIR" pull
+		PWD=$(pwd)
+		cd "$DNSMASQ_DIR"
+
+		git checkout master
+		git pull
 		if [ $? != 0 ] ; then
 			echo -e "${ERR_COLOR}Cannot pull from origin.${RST_COLOR}" >&2
+			cd "$PWD"
 			return 1
 		fi
-		git -C "$DNSMASQ_DIR" checkout $DNSMASQ_COMMIT
+		git checkout $DNSMASQ_COMMIT
 		if [ $? != 0 ] ; then
 			echo -e "${ERR_COLOR}Cannot checkout to commit $DNSMASQ_COMMIT.${RST_COLOR}" >&2
+			cd "$PWD"
 			return 1
 		fi
+
+		cd "$PWD"
 	fi
 	
 	echo -e "${CON_COLOR}Done.${RST_COLOR}"
