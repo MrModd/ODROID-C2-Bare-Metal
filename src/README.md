@@ -278,3 +278,43 @@ The assign operation in the while loop is therefore always
 translated in a read from memory, an update of its value and
 a store. Three instructions that are substituted by a single
 barrier instruction.
+
+## 05 - iomemdef
+
+For now, setting the GPIO output level requires at least one
+read from memory that gets the value contained in the variable
+(that is the address of the GPIO register) and one read from
+the I/O device that gets the actual state of the GPIO.
+Let's assume that you have the following variable:
+
+```c
+volatile u32 *gpio1 = (u32 *) 0x12345678;
+```
+
+You want to update the value of the register pointed by the
+I/O address *0x12345678*. First of all you need to obtain this
+address reading from memory the variable *gpio1*. After that
+you can load in a CPU register the value contained at that
+address.
+
+This first access can be avoided if you put the address value
+directly as a constant that will be translated to an immediate
+value. This is done by the **iomemdef()** macro that
+generates at compile time new constants. All these addresses
+can be accessed as offset of a base address defined under the
+name of **_iomem**. The macro **iomem()* helps accessing
+the address space as if it was an array. To make this
+mechanism more efficient it's important to set _iomem to
+zero, because in this way there's no need to compute the
+final address *_iomem[n]* (where n is a constant generated
+with iomemdef()) because 0 + n is always equal to n and can
+be simplyfied at compile time.
+
+Keep in mind that even if this is a 64bit architecture, as
+the SoC manual says devices registers are all 32bit long. For
+that reason this iomem
+
+### Testing
+
+In the compiled version of the program (program.lst) you should
+see less load operations.
