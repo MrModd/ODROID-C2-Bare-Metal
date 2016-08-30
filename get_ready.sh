@@ -107,26 +107,40 @@ clone_uboot() {
 			echo -e "${ERR_COLOR}Cannot clone repository.${RST_COLOR}" >&2
 			return 1
 		fi
-		git -C "$UBOOT_DIR" checkout $UBOOT_COMMIT
+
+		PWD=$(pwd)
+		cd "$UBOOT_DIR"
+
+		git checkout $UBOOT_COMMIT
 		if [ $? != 0 ] ; then
 			echo -e "${ERR_COLOR}Cannot checkout to commit $UBOOT_COMMIT.${RST_COLOR}" >&2
+			cd "$PWD"
 			return 1
 		fi
+
+		cd "$PWD"
 	else
 		echo -e "${CON_COLOR}Already present.${RST_COLOR}"
 		echo -e "${TXT_COLOR}Pulling last changes...${RST_COLOR}"
 		
-		git -C "$UBOOT_DIR" checkout master
-		git -C "$UBOOT_DIR" pull
+		PWD=$(pwd)
+		cd "$UBOOT_DIR"
+
+		git checkout master
+		git pull
 		if [ $? != 0 ] ; then
 			echo -e "${ERR_COLOR}Cannot pull from origin.${RST_COLOR}" >&2
+			cd "$PWD"
 			return 1
 		fi
-		git -C "$UBOOT_DIR" checkout $UBOOT_COMMIT
+		git checkout $UBOOT_COMMIT
 		if [ $? != 0 ] ; then
 			echo -e "${ERR_COLOR}Cannot checkout to commit $UBOOT_COMMIT.${RST_COLOR}" >&2
+			cd "$PWD"
 			return 1
 		fi
+
+		cd "$PWD"
 	fi
 	
 	echo -e "${CON_COLOR}Done.${RST_COLOR}"
