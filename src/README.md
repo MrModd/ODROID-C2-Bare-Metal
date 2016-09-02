@@ -311,8 +311,8 @@ with iomemdef()) because 0 + n is always equal to n and can
 be simplyfied at compile time.
 
 Keep in mind that even if this is a 64bit architecture, as
-the SoC manual says devices registers are all 32bit long. For
-that reason this iomem
+the SoC manual says peripheral registers are all 32bit long. For
+that reason this iomem uses 32bit variables.
 
 ### Testing
 
