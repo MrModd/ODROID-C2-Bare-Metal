@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  \***********************************************************************/
 
+#include "odroidc2.h"
 #include "common.h"
 
 /**
@@ -32,9 +33,32 @@ static void init_bss(void)
 	}
 }
 
+/**
+ * init_gpio: set GPIO port wired to the system led
+ *            as an output and clear the pinmux
+ */
+static void init_gpio(void)
+{
+	/* Pointer to GPIO registers for AO bank */
+	volatile u32 *gpio_ao = (u32 *) GPIOAO_BASE;
+	
+	/* PINMUX base registers */
+	volatile u32 *ao_reg =  (u32 *) AO_REG;
+	volatile u32 *ao_reg2 = (u32 *) AO_REG2;
+	
+	/* Reset mux */
+	CLR_MASK(*ao_reg, AO_REG_GPIOAO_13_MASK);
+	CLR_MASK(*ao_reg2, AO_REG2_GPIOAO_13_MASK);
+	
+	/* Set as an output */
+	CLR_MASK(gpio_ao[GPIOAO_OEN_OFFSET], BIT2MASK(GPIOAO_13_OEN_BIT));
+	CLR_MASK(gpio_ao[GPIOAO_PUPDEN_OFFSET], BIT2MASK(GPIOAO_13_PUPDEN_BIT));
+}
+
 void _init(void)
 {
 	init_bss();
+	init_gpio();
 
 	main();
 }

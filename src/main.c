@@ -19,29 +19,17 @@
 #include "odroidc2.h"
 #include "common.h"
 
-/* Pointer to GPIO registers for AO bank */
-volatile unsigned int *gpio_ao = (unsigned int *) GPIOAO_BASE;
-
 /* From SoC manual you can see the length of these registers. Although
  * ARM 64bit allow to have 64bit addresses, these ones are 32 bit long.
  * Be careful on the cast you make. */
 
 void main(void)
 {
-	/* PINMUX base registers */
-	volatile u32 *ao_reg =  (u32 *) AO_REG;
-	volatile u32 *ao_reg2 = (u32 *) AO_REG2;
-	
+	/* Pointer to GPIO registers for AO bank */
+	volatile u32 *gpio_ao = (u32 *) GPIOAO_BASE;
+
 	/* Turning off the SYS_LED and then loop indefinitely */
 
-	/* Reset mux */
-	CLR_MASK(*ao_reg, AO_REG_GPIOAO_13_MASK);
-	CLR_MASK(*ao_reg2, AO_REG2_GPIOAO_13_MASK);
-	
-	/* Set as an output */
-	CLR_MASK(gpio_ao[GPIOAO_OEN_OFFSET], BIT2MASK(GPIOAO_13_OEN_BIT));
-	CLR_MASK(gpio_ao[GPIOAO_PUPDEN_OFFSET], BIT2MASK(GPIOAO_13_PUPDEN_BIT));
-	
 	for(;;) {
 
 		/* Set high */
