@@ -28,7 +28,7 @@ void main(void)
 	/* Pointer to GPIO registers for AO bank */
 	volatile u32 *gpio_ao = (u32 *) GPIOAO_BASE;
 
-	/* Turning off the SYS_LED and then loop indefinitely */
+	/* Blinking the SYS_LED indefinitely */
 
 	for(;;) {
 
