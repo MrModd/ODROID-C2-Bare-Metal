@@ -25,7 +25,7 @@
 
 void main(void)
 {
-	/* Turning off the SYS_LED and then loop indefinitely */
+	/* Blinking the SYS_LED indefinitely */
 
 	for(;;) {
 
