@@ -194,19 +194,19 @@ sure that the current execution state is Aarch64.
 ### init.c
 
 After *startup.S* execution jumps to function *_init()* in *init.c*.
-This file for now initializes only the .bss section of the program,
-but it will be used also for other purposes. Length of .bss section
-is obtained by the linker script *program.lds* that defined two
-labels, *_bss_start* and *_bss_end* at the beginning and at the
-end of the section.
+This file for now initializes only the .bss section of the program
+and the GPIO, but it will be used also for other purposes.
+Length of .bss section is obtained by the linker script *program.lds*
+that defined two labels, *_bss_start* and *_bss_end* at the beginning
+and at the end of the section.
 
 ### loop_delay() function
 
 This is the first version of a delay function. It is necessary in
 order to wait from a state of the LED and another, but at this
-time it is inaccurate. Basically it counts until the number specified
-as argument and the speed of this operation depends mostly on
-the CPU frequency.
+time it is inaccurate. Basically it counts from zero to the number
+specified as argument and the speed of this operation depends
+mostly on the CPU frequency.
 
 ### Testing
 

@@ -27,14 +27,6 @@ void main(void)
 {
 	/* Turning off the SYS_LED and then loop indefinitely */
 
-	/* Reset mux */
-	iomem_low(AO_REG, AO_REG_GPIOAO_13_MASK);
-	iomem_low(AO_REG2, AO_REG2_GPIOAO_13_MASK);
-	
-	/* Set as an output */
-	iomem_low(GPIOAO_OEN, BIT2MASK(GPIOAO_13_OEN_BIT));
-	iomem_low(GPIOAO_PUPDEN, BIT2MASK(GPIOAO_13_PUPDEN_BIT));
-	
 	for(;;) {
 
 		/* Set high */
