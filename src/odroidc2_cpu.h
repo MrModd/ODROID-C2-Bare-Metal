@@ -111,4 +111,22 @@
  */
 #define __dsb() __asm__ __volatile__ ("DSB SY" : : : "memory")
 
+/**
+ * svc: Supervisor call
+ *
+ * Generate an exception targeting EL1 level
+ *
+ * @val: a 16bit value
+ */
+#define __svc(val) __asm__ __volatile__ ("SVC " #val : : : "memory")
+
+/**
+ * hvc: Hypervisor call
+ *
+ * Generate an exception targeting EL2 level
+ *
+ * @val: a 16bit value
+ */
+#define __hvc(val) __asm__ __volatile__ ("HVC " #val : : : "memory")
+
 #endif

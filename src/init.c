@@ -20,6 +20,20 @@
 #include "common.h"
 
 /**
+ * init_exceptions: set the Vector Base Address
+ *                  Register if in EL1-EL3
+ */
+static void init_exceptions(void)
+{
+	extern void _exception_vector(void);
+	u64 current_el = _read_CurrentEL();
+
+	if (current_el != CURRENT_EL0) {
+		__asm__ __volatile__ ("msr VBAR_EL1, %[vect]" : : [vect] "r" (&_exception_vector) : "memory");
+	}
+}
+
+/**
  * init_bss: initialze bss section setting to
  *           zero all the content
  */
@@ -50,6 +64,7 @@ static void init_gpio(void)
 
 void _init(void)
 {
+	init_exceptions();
 	init_bss();
 	init_gpio();
 

@@ -16,31 +16,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  \***********************************************************************/
 
-#ifndef COMMON_H
-#define COMMON_H
-
-#include "types.h"
 #include "odroidc2.h"
+#include "common.h"
 
-extern void main(void);
+#define LED_ON		\
+		iomem_low(GPIOAO_OUT, BIT2MASK(GPIOAO_13_OUT_BIT));
 
-extern void panic0(void);
+#define LED_OFF		\
+		iomem_high(GPIOAO_OUT, BIT2MASK(GPIOAO_13_OUT_BIT));
 
-/**
- * loop_delay: wait a bit doing some empty loops
- * @d: number of loops to do
- */
-static inline void loop_delay(u64 d)
+void panic0(void)
 {
-	/* Making c volatile prevents compiler to
-	 * optimize next empty while loop */
-	//volatile u64 c = 0;
-
-	while (d-- > 0) {
-		//c+=d;
-		/* A memory barrier is faster than a write in memory */
-		__dmb();
+	for(;;) {
+	  LED_ON
+	  loop_delay(5000000llu);
+	  LED_OFF
+	  loop_delay(5000000llu);
 	}
 }
 
-#endif
+#undef LED_ON
+#undef LED_OFF

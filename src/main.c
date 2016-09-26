@@ -25,6 +25,9 @@
 
 void main(void)
 {
+	/* Generate a software interrupt targeting EL1 state */
+	__svc(0);
+
 	/* Blinking the SYS_LED indefinitely */
 
 	for(;;) {
