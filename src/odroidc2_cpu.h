@@ -50,6 +50,11 @@
  * 
  */
 
+#define CURRENT_EL0 0x00
+#define CURRENT_EL1 0x04
+#define CURRENT_EL2 0x08
+#define CURRENT_EL3 0x0c
+
 /**
  * _read_CurrentEL: get the current exception level
  * returns: a 64bit value where bits [3:2] encodes the
@@ -59,10 +64,11 @@
  *          - 10 -> EL2
  *          - 11 -> EL3
  */
-#define _read_CurrentEL() ({	\
+#define _read_CurrentEL() __extension__ ({	\
 	u64 value;          	\
 	__asm__ __volatile__ ("mrs %[reg], CurrentEL" : [reg] "=r" (value) : : "memory"); \
 	value; })
+/* Macro above works only with GCC and it is not ANSI/ISO C compliant. */
 
 /* Next instructions are three different kinds of barriers.
  * In ARMv7 these were obtained with the co-processor C15.
