@@ -318,3 +318,47 @@ that reason this iomem uses 32bit variables.
 
 In the compiled version of the program (program.lst) you should
 see less load operations.
+
+## 06 - exceptions
+
+When an interrupt occurs the execution must jump to a routine
+that can handle this event. Normal flow must be interrupted
+and then restored from the last instruction that went on the CPU.
+After registering the interrupt the execution jumps to a
+well known address that can be configured through a special
+CPU register, the **Vector Base Address Register** (VBAR).
+This address represent the beginning of the Exception Table
+that contains the instructions that must be executed for the
+event handling. Several types of exceptions can be caught and
+a different section of this table is used for each of them.
+
+There are 4 types of exceptions: **synchronous**, **IRQ**,
+**FIQ** and **asynchronous**. For each of them there're 4
+entries in the table. The one called when the event occurrs
+depends on the CPU state:
+
+- CPU was already at the Exception Level used to handle
+  the exception and SP0 is used as Stack Pointer for each
+  EL;
+- CPU was already at the Execution Level used to handle
+  the exception and each EL uses a different Stack Pointer;
+- CPU was in a lower Exception Level and in AArch64
+  execution state;
+- CPU was in a lower Exception Level and in AArch32
+  execution state.
+
+In ARMv8 a software interrupt can be generated with **SVC**
+or **HVC** instructions. First one generates a synchronous
+exception targeting EL2, second one generates the same
+exception targeting EL3.
+
+### Testing
+
+For now the important is to verify the correctness of the
+exception table, including offsets and base address.
+Executing **SVC** instruction after initializing the
+VBAR address should jump to the entry of the table
+related to a synchronous exception targeting the same
+EL of the normal flow of execution and with a different
+SP for each EL. In short it should execute the instruction
+at offset 0x200 from the exception base address.

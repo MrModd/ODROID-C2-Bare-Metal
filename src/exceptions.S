@@ -38,6 +38,9 @@
  * instruction of ARMv7 architecture. This allow to handle the
  * exception directly from the exception vector instead of the
  * usual jump instruction (LDR_PC_PC).
+ *
+ * See the "AArch64 exception table" paragraph in the ARMv8
+ * Programmer's Guide.
  */
 
 	/* Force alignment of the code */
