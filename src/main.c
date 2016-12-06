@@ -23,12 +23,61 @@
  * ARM 64bit allow to have 64bit addresses, these ones are 32 bit long.
  * Be careful on the cast you make. */
 
+void welcome(void)
+{
+	puts("\n");
+	puts("+--------------------------------------------------+\n");
+	puts("|   ___  ____  ____   ___ ___ ____     ____ ____   |\n");
+	puts("|  / _ \\|  _ \\|  _ \\ / _ \\_ _|  _ \\   / ___|___ \\  |\n");
+	puts("| | | | | | | | |_) | | | | || | | | | |     __) | |\n");
+	puts("| | |_| | |_| |  _ <| |_| | || |_| | | |___ / __/  |\n");
+	puts("|  \\___/|____/|_| \\_\\\\___/___|____/   \\____|_____| |\n");
+	puts("|                                      Bare Metal  |\n");
+	puts("|                                                  |\n");
+	puts("|  Copyright (c) 2016 Federico \"MrModd\" Cosentino  |\n");
+	puts("+--------------------------------------------------+\n");
+	puts("\n");
+}
+
+void serial_test(void)
+{
+	unsigned int r;
+
+	puts("=== Serial test ===\n");
+
+	puts("Writing 0xdeadc0de00000000 as 64bit hexadecimal value:\n\t");
+	r = puth64(0xdeadc0de00000000);
+	puts("\n\tWritten ");putd(r);puts(" characters\n");
+
+	puts("Writing 1099511627776 as unsigned long:\n\t");
+	r = putu(0x10000000000);
+	puts("\n\tWritten ");putd(r);puts(" characters\n");
+
+	puts("Writing -2345754 as signed long:\n\t");
+	r = putd(-2345754l);
+	puts("\n\tWritten ");putd(r);puts(" characters\n");
+
+	puts("Writing result of 17/13+3 signed float operation:\n\t");
+	r = putf(17.0/13 + 3, 20);
+	puts("\n\tWritten ");putd(r);puts(" characters\n");
+
+	puts("====== Done =======\n\n");
+}
+
 void main(void)
 {
 	/* Generate a software interrupt targeting EL1 state */
-	__svc(0);
+	//__svc(0);
+
+	/* Print a welcome message */
+	welcome();
+
+	/* Print some tests */
+	serial_test();
 
 	/* Blinking the SYS_LED indefinitely */
+
+	puts("Start blinking...\n");
 
 	for(;;) {
 

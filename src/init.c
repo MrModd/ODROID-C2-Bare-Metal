@@ -67,6 +67,7 @@ void _init(void)
 	init_exceptions();
 	init_bss();
 	init_gpio();
+	init_uart();
 
 	main();
 }

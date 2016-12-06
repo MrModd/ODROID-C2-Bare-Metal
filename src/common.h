@@ -26,6 +26,16 @@ extern void main(void);
 
 extern void panic0(void);
 
+/* UART functions */
+extern void init_uart(void);
+extern unsigned int putc(u32);
+extern unsigned int puts(const char *);
+extern unsigned int puth(u32);
+extern unsigned int puth64(u64);
+extern unsigned int putu(unsigned long);
+extern unsigned int putd(long);
+extern unsigned int putf(double, unsigned int);
+
 /**
  * loop_delay: wait a bit doing some empty loops
  * @d: number of loops to do

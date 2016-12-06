@@ -104,5 +104,6 @@ static inline void iomem_low(u32 reg, u32 mask)
 
 #include "odroidc2_gpio.h"
 #include "odroidc2_cpu.h"
+#include "odroidc2_uart.h"
 
 #endif
