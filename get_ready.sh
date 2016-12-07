@@ -24,13 +24,13 @@ CURR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd )" # Current directory
 # Variables
 #########################################################
 CC_NAME="gcc-linaro-aarch64-none-elf-4.9-2014.09_linux"
-CC_URLS=("https://releases.linaro.org/14.09/components/toolchain/binaries/gcc-linaro-aarch64-none-elf-4.9-2014.09_linux.tar.xz" \
+CC_URLS=("https://releases.linaro.org/archive/14.09/components/toolchain/binaries/gcc-linaro-aarch64-none-elf-4.9-2014.09_linux.tar.xz" \
 			"http://dn.odroid.com/toolchains/gcc-linaro-aarch64-none-elf-4.9-2014.09_linux.tar.xz")
 UBOOT_GIT="https://github.com/hardkernel/u-boot.git"
-# Last commit (61f29bb) in branch odroidc2-v2015.01 breaks compilation.
-# Waiting for a patch reverting to a previous working commit.
-UBOOT_COMMIT="2fcbc68"
-#UBOOT_COMMIT="odroidc2-v2015.01"
+# Point to the most recent commit of the U-Boot repository
+UBOOT_COMMIT="odroidc2-v2015.01"
+# In case of problems use the following tested commit
+#UBOOT_COMMIT="1471870" #Commit date: Tue Nov 8 08:41:53 2016 +0900
 BOOT_FILES=("https://github.com/hardkernel/u-boot/raw/odroidc2-v2015.01/sd_fuse/bl1.bin.hardkernel" \
 			"https://github.com/hardkernel/u-boot/raw/odroidc2-v2015.01/sd_fuse/sd_fusing.sh")
 UBOOT_DIR="$CURR/uboot"
