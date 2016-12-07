@@ -85,6 +85,7 @@ download_crosscompiler() {
 		tar -xf "/tmp/$file" -C "$CC_DIR"
 		if [ $? != 0 ] ; then
 			echo -e "${ERR_COLOR}Cannot extract crosscompiler.${RST_COLOR}" >&2
+			rm -rf "$CC_DIR/$CC_NAME"
 			return 1
 		fi
 		
