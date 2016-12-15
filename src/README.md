@@ -362,3 +362,173 @@ related to a synchronous exception targeting the same
 EL of the normal flow of execution and with a different
 SP for each EL. In short it should execute the instruction
 at offset 0x200 from the exception base address.
+
+## 07 - UART
+
+The only way to understand what's happening on the board
+is through the system LED. It's time to pass to a more
+complete feedback like the serial port.
+
+The ODROID C2 is equipped with several UART (Universal
+Asynchronous Receiver/Transmitter) one of these is wired
+to the *serial console port*, the white 4 pin connector
+on the opposite side of the USB ports.
+
+### Terminal emulation
+
+Although a serial device can be accessed directly from
+its *device file* in the /dev virtual filesystem, it's
+useful to adopt a terminal emulator such as **Minicom**.
+
+In order to "see" on the screen what the serial device
+is transmitting it's essential to configure the terminal
+emulator with the same configuration of the device.
+Even if this can sound a futile reminder it's not always
+so immediate to understand how the hardware device should
+be set up or what's its state after a hard reset of the
+board.
+
+The configuration we'll use for this UART is:
+
+- Two wire configuration (No CTS/RTS signals)
+- 8 bit per character
+- No parity bit
+- No stop bit
+- Baud rate 115200 bps
+
+### Wiring
+
+Next step, after configuring the terminal emulation, is
+to understand how the serial port on the ODROID C2 is
+wired to the SoC.
+
+From the board schematics CON5 (the white connector)
+has the following pinout:
+
+```
+________UART_________
+|Pin 4 - GND        |
+|Pin 3 - TTA_TXD    |
+|Pin 2 - TTA_RXD    |
+|Pin 1 - VDDIO_AO3V3|
+\___________________|
+
+```
+
+Where **TTA_RXD** is directly connected to **GPIOAO_0**
+(alias **UART_TX_AO**) and **TTA_TXD** to **GPIOAO_1**
+(**UART_RX_AO**).
+
+These are general purpose registers that means you need
+to correctly set the pinmux first in order to expose the
+serial signal on the ports instead of the GPIO.
+
+As mentioned before a **pinmux** is a signal multiplexer that
+let to make available more devices on the same pins. The
+downside is that you cannot use all of them at the
+same time. For example the mentioned two lines are
+wired to the serial device and can also be used as GPIO,
+but not at the same time.
+
+### Registers
+
+Generally there are at least 4 registers that helps to
+access an UART device:
+
+- A setup register, that is required to set and initialize
+  the device;
+- A status register, that shows the current status of the
+  read and write buffers as well as the activity on the
+  TX and RX ports;
+- A read register, that contains the data received;
+- A write register, where you store the data that the
+  device will send on the serial channel.
+
+These registers and their descriptions can be found on the
+SoC manual of the board. On the AMLOGIC S905 (the ODROID C2
+SoC) there are 6 registers for each UART device built in
+the chip. In addition to the 4 mentioned there are the
+UART IRQ control register and a register for the Baud rate
+configuration.
+
+### Port configuration
+
+There are few essential step to follow in order to set the
+device in a known and working state. First of all (as said)
+you need to expose the UART to the pinmux, second you should
+set the desired mode and speed of the serial port and
+third you must enable (or turn on) the device that on this
+board consist in enabling the TX and RX channels.
+
+On some devices you also need to start the clock source that
+provides the synchronization signal to the UART, but in this
+case we'll use an external crystal oscillator (XTAL_CLK).
+
+### Print functions
+
+After initializing the UART device it's useful to abstract
+the writing process on the serial channel.
+
+Sending a character consist of writing the bits on the
+write register. The device will take them and put (if present)
+in the output FIFO until it will be sent.
+
+Sending single characters or strings is pretty easy because
+they are already sequence ASCII symbols that can be printed
+on the screen of the receiver. On the contrary numbers must be
+converted from their binary representation to printable
+strings.
+
+Starting from a function that sends a single ASCII character
+you can build more complex functions that character by
+character send a string or parse a number and send its
+decimal representation. At the end you always need to
+print a sequence of ASCII character in order to see
+the number on the receiver terminal.
+
+These functions should include the possibility to print
+signed and unsigned integers, decimal numbers and hexadecimal
+numbers that can be useful to prepresent addresses.
+
+On the ODROID C2 you should be careful on the length of
+the variables because some values can be 64bit long.
+
+### Testing
+
+Now you have a better way to debug the board and understand
+what's happening. Strings can be printed at some points
+on the code in order to understand when (or if) it is
+reached.
+
+For example the code in this branch should print the
+following splash screen:
+
+```
++--------------------------------------------------+
+|   ___  ____  ____   ___ ___ ____     ____ ____   |
+|  / _ \|  _ \|  _ \ / _ \_ _|  _ \   / ___|___ \  |
+| | | | | | | | |_) | | | | || | | | | |     __) | |
+| | |_| | |_| |  _ <| |_| | || |_| | | |___ / __/  |
+|  \___/|____/|_| \_\\___/___|____/   \____|_____| |
+|                                      Bare Metal  |
+|                                                  |
+|  Copyright (c) 2016 Federico "MrModd" Cosentino  |
++--------------------------------------------------+
+
+=== Serial test ===
+Writing 0xdeadc0de00000000 as 64bit hexadecimal value:
+        0xdeadc0de00000000
+        Written 18 characters
+Writing 1099511627776 as unsigned long:
+        1099511627776
+        Written 13 characters
+Writing -2345754 as signed long:
+        -2345754
+        Written 8 characters
+Writing result of 17/13+3 signed float operation:
+        4.30769230769230748734
+        Written 22 characters
+====== Done =======
+
+Start blinking...
+```
